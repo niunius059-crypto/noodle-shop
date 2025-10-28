@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>宿舍泡面下单 - 泡面速递</title>
+<style>
+  :root {
+    --yellow: #facc15;
+    --yellow-dark: #eab308;
+    --bg-start: #fff7d6;
+    --bg-end: #fde68a;
+    --radius-lg: 16px;
+    --radius-sm: 8px;
+    --text-main: #1f2937;
+    --text-dim: #6b7280;
+    --card-bg: #fff;
+    --border: rgba(0,0,0,.08);
+    --shadow: 0 18px 40px rgba(0,0,0,.12);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",Inter,system-ui,sans-serif;
+  }
+  body {
+    margin:0;
+    background: radial-gradient(circle at 20% 20%, var(--bg-start) 0%, transparent 60%), radial-gradient(circle at 80% 0%, #fff 0%, transparent 60%), linear-gradient(160deg,var(--bg-start) 0%,var(--bg-end) 100%);
+    color:var(--text-main);
+    padding:1rem 1rem 5rem;
+    max-width:480px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  header{
+    background:var(--yellow);
+    color:#000;
+    font-weight:600;
+    text-align:center;
+    font-size:1.3rem;
+    padding:.9rem 1rem;
+    border-radius:var(--radius-lg);
+    box-shadow:0 10px 30px rgba(250,204,21,.4);
+    margin-bottom:1rem;
+  }
+  .notice{
+    font-size:.8rem;
+    line-height:1.4;
+    color:#444;
+    background:#fff;
+    border-radius:var(--radius-lg);
+    border:1px solid var(--border);
+    padding:.75rem .9rem;
+    box-shadow:var(--shadow);
+    margin-bottom:1rem;
+  }
+  .menu-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    gap:1rem;
+  }
+  .food-card{
+    background:var(--card-bg);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow);
+    border:1px solid var(--border);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+  .food-img{
+    width:100%;
+    height:100px;
+    object-fit:cover;
+    background:#000;
+  }
+  .food-body{
+    padding:.75rem .9rem;
+    flex:1;
+  }
+  .food-title{
+    margin:0;
+    font-size:.95rem;
+    font-weight:600;
+    line-height:1.3;
+    color:#111;
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+  }
+  .food-desc{
+    margin:.4rem 0 .6rem;
+    font-size:.75rem;
+    line-height:1.4;
+    color:var(--text-dim);
+    min-height:2.8em;
+  }
+  .select-btn{
+    border:0;
+    width:100%;
+    background:var(--yellow);
+    color:#000;
+    font-weight:600;
+    border-radius:var(--radius-sm);
+    padding:.5rem .75rem;
+    font-size:.8rem;
+    cursor:pointer;
+  }
+  .select-btn:active{ background:var(--yellow-dark); }
+
+  form{
+    background:#fff;
+    border-radius:var(--radius-lg);
+    border:1px solid var(--border);
+    box-shadow:var(--shadow);
+    margin-top:1.5rem;
+    padding:1rem 1rem 1.25rem;
+  }
+  form h2{
+    margin:0 0 .75rem;
+    font-size:1rem;
+    font-weight:600;
+    text-align:center;
+  }
+  label{
+    font-size:.8rem;
+    font-weight:500;
+    display:block;
+    margin-top:.75rem;
+    margin-bottom:.3rem;
+    color:#111;
+  }
+  input,textarea,select{
+    width:100%;
+    border:1px solid #d1d5db;
+    border-radius:var(--radius-sm);
+    font-size:.9rem;
+    padding:.6rem .6rem;
+    outline:none;
+  }
+  input:focus,textarea:focus,select:focus{
+    border-color:var(--yellow-dark);
+    box-shadow:0 0 0 3px rgba(250,204,21,.4);
+  }
+  .inline-row{
+    display:flex;
+    gap:.5rem;
+  }
+  .inline-row>div{flex:1;}
+
+  .submit-btn{
+    margin-top:1rem;
+    width:100%;
+    background:var(--yellow);
+    border:none;
+    padding:.8rem;
+    border-radius:var(--radius-sm);
+    font-weight:600;
+    cursor:pointer;
+    font-size:1rem;
+    color:#000;
+  }
+  .submit-btn:active{ background:var(--yellow-dark); }
+
+  .success-box{
+    display:none;
+    margin-top:1rem;
+    background:#ecfccb;
+    border:1px solid #84cc16;
+    color:#365314;
+    font-size:.8rem;
+    line-height:1.4;
+    padding:.75rem .9rem;
+    border-radius:var(--radius-sm);
+  }
+
+  footer{
+    text-align:center;
+    font-size:.7rem;
+    color:#777;
+    margin-top:2rem;
+    line-height:1.4;
+  }
+  footer a{
+    color:#000;
+    font-weight:600;
+    text-decoration:none;
+  }
+
+</style>
+</head>
+<body>
+
+<header>🍜 泡面速递 · 宿舍现泡现送</header>
+
+<div class="notice">
+  <strong>真·宿舍速递：</strong><br/>
+  我现场帮你泡面，3～5分钟起飞，送到你宿舍门口。<br/>
+  先下单，等我私聊确认才算有效订单（避免我在上课）。
+</div>
+
+<section class="menu-grid">
+  <div class="food-card">
+    <img class="food-img" src="https://images.unsplash.com/photo-1617196039924-9b0e376b5d2b" alt="红烧牛肉面" />
+    <div class="food-body">
+      <p class="food-title">
+        <span>康师傅 红烧牛肉面</span>
+        <span style="font-size:.8rem;color:#be123c;font-weight:600;">￥5</span>
+      </p>
+      <p class="food-desc">经典口味，汤浓。推荐加火腿肠+1元。</p>
+      <button class="select-btn" onclick="pick('康师傅 红烧牛肉面',5)">点这个</button>
+    </div>
+  </div>
+
+  <div class="food-card">
+    <img class="food-img" src="https://images.unsplash.com/photo-1623428187969-5e4e479d8d35" alt="酸菜牛肉面" />
+    <div class="food-body">
+      <p class="food-title">
+        <span>统一 老坛酸菜牛肉面</span>
+        <span style="font-size:.8rem;color:#be123c;font-weight:600;">￥5</span>
+      </p>
+      <p class="food-desc">酸酸爽爽，不腻，夜宵人气款。</p>
+      <button class="select-btn" onclick="pick('统一 老坛酸菜牛肉面',5)">点这个</button>
+    </div>
+  </div>
+
+  <div class="food-card">
+    <img class="food-img" src="https://images.unsplash.com/photo-1629719009535-1a5d3a0b13a2" alt="大骨面" />
+    <div class="food-body">
+      <p class="food-title">
+        <span>白象 大骨面</span>
+        <span style="font-size:.8rem;color:#be123c;font-weight:600;">￥4</span>
+      </p>
+      <p class="food-desc">浓厚骨汤味，性价比之王。</p>
+      <button class="select-btn" onclick="pick('白象 大骨面',4)">点这个</button>
+    </div>
+  </div>
+</section>
+
+<form id="orderForm">
+  <h2>填写订单信息</h2>
+
+  <label>泡面款式</label>
+  <input id="noodle" required placeholder="上面点击选择自动填" readonly />
+
+  <label>价格 (¥)</label>
+  <input id="price" required readonly />
+
+  <div class="inline-row">
+    <div>
+      <label>楼号</label>
+      <input id="building" placeholder="例：1号楼" required />
+    </div>
+    <div>
+      <label>寝室</label>
+      <input id="room" placeholder="305" required />
+    </div>
+  </div>
+
+  <label>口味/加料备注</label>
+  <textarea id="note" rows="3" placeholder="要不要加肠？要不要加辣？要不要少水？"></textarea>
+
+  <label>联系（微信/QQ）</label>
+  <input id="contact" placeholder="我会加你或私聊你" required />
+
+  <label>现在是？</label>
+  <select id="timeSlot" required>
+    <option value="">请选择时间段</option>
+    <option>我现在就饿了（优先）</option>
+    <option>下课后送（大概20-30分钟内）</option>
+    <option>宿舍里/慢慢来</option>
+  </select>
+
+  <button class="submit-btn" type="submit">提交订单</button>
+
+  <div class="success-box" id="successBox">
+    订单已提交！我会私聊你确认。
+  </div>
+</form>
+
+<footer>
+  <div>🚚 仅限本校区（高密校区）宿舍范围内</div>
+  <div>📱 联系我：微信 / QQ (下单会看到)</div>
+  <div style="margin-top:.5rem;">管理入口（老板专用）：<br/>
+    <a href="admin.html">admin.html</a>
+  </div>
+</footer>
+
+<script>
+  // 生成唯一ID
+  function generateOrderId(){
+    const now = Date.now();
+    const rand = Math.floor(Math.random()*1000);
+    return "ORD-"+now+"-"+rand;
+  }
+
+  // 用户选择泡面
+  function pick(name, price){
+    document.getElementById('noodle').value = name;
+    document.getElementById('price').value = price;
+    window.scrollTo({top:document.getElementById('orderForm').offsetTop,behavior:'smooth'});
+  }
+
+  // 把订单存进 localStorage
+  function saveOrder(order){
+    const raw = localStorage.getItem('noodleOrders');
+    let list = [];
+    if(raw){
+      try{ list = JSON.parse(raw); }catch(e){ list = []; }
+    }
+    list.push(order);
+    localStorage.setItem('noodleOrders', JSON.stringify(list));
+  }
+
+  document.getElementById('orderForm').addEventListener('submit', function(e){
+    e.preventDefault();
+
+    const noodle   = document.getElementById('noodle').value.trim();
+    const price    = document.getElementById('price').value.trim();
+    const building = document.getElementById('building').value.trim();
+    const room     = document.getElementById('room').value.trim();
+    const note     = document.getElementById('note').value.trim();
+    const contact  = document.getElementById('contact').value.trim();
+    const timeSlot = document.getElementById('timeSlot').value.trim();
+
+    if(!noodle || !price || !building || !room || !contact || !timeSlot){
+      alert("请把信息填完整 🙏");
+      return;
+    }
+
+    const order = {
+      id: generateOrderId(),
+      noodle,
+      price,
+      building,
+      room,
+      note,
+      contact,
+      timeSlot,
+      status: "待确认", // 待确认 / 已接受 / 送面中 / 已送达 / 取消
+      createdAt: new Date().toLocaleString()
+    };
+
+    saveOrder(order);
+
+    // 清空表单 + 显示成功提示
+    document.getElementById('orderForm').reset();
+    document.getElementById('successBox').style.display = 'block';
+
+    // 你也可以在这里自动跳转到微信私聊协议 / QQ私聊协议
+    // 例如： window.location.href = "weixin://dl/chat?sun_yubo"
+    // 或者 "mqqwpa://im/chat?chat_type=wpa&uin=QQ号"
+    // 注意：这些只在手机端生效，PC浏览器可能不会打开。
+  });
+</script>
+
+</body>
+</html>
